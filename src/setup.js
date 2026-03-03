@@ -2,77 +2,70 @@ import inquirer from "inquirer";
 import ora from "ora";
 import chalk from "chalk";
 
-async function loadingSpinner(answers) {
-  const spinner = ora(
-    chalk.cyan.bold("Loading ") + chalk.red("initial prompts"),
-  ).start();
-
-  setTimeout(() => {
-    ((spinner.color = "yellow"),
-      (spinner.text =
-        chalk.yellowBright("Loading ") +
-        chalk.magentaBright("configuration...")));
-  }, 1000);
-
+async function generateProjectFiles(answers) {
   console.log(
-    chalk.blueBright.bold("\nProject Name Confirmation: "),
+    chalk.blueBright("\nProject name confirmation:"),
     chalk.green(answers.projectConfirm),
   );
   console.log(
-    chalk.blueBright.bold("Project Framework : "),
+    chalk.blueBright("Project framework:"),
     chalk.cyan(answers.framework),
   );
   console.log(
-    chalk.blueBright.bold("Project Database: "),
+    chalk.blueBright("Project database:"),
     chalk.yellow(answers.database),
   );
   console.log(
-    chalk.blueBright.bold("Project AuthType: "),
+    chalk.blueBright("Project authType:"),
     chalk.magenta(answers.authType),
   );
-
-  spinner.succeed(chalk.green.bold("Done!"));
 }
 
 export async function createBoilerPlate(options) {
-  //   console.log(options); -> trying out project name
-
   const answers = await inquirer.prompt([
     {
       name: "projectConfirm",
       type: "confirm",
-      message: chalk.cyan(
-        `Are you sure about the project name ${chalk.yellow.bold(options)}?`,
-      ),
-      choices: ["Y", "N"],
+      message: `Are you sure about the project name ${chalk.yellow(options)}?`,
     },
     {
       name: "framework",
       type: "select",
-      message: chalk.cyan("Choose a Framework for your project: "),
+      message: "Choose a Framework for your project:",
       choices: [
-        chalk.green("Express"),
-        chalk.blue("Fastify"),
-        chalk.magenta("Hono"),
+        { name: chalk.green("Express"), value: "Express" },
+        { name: chalk.blue("Fastify"), value: "Fastify" },
+        { name: chalk.magenta("Hono"), value: "Hono" },
       ],
     },
     {
       name: "database",
       type: "select",
-      message: chalk.cyan("Choose a Database for your project: "),
+      message: "Choose a Database for your project:",
       choices: [
-        chalk.blueBright("PostgreSQL"),
-        chalk.greenBright("MongoDB"),
-        chalk.cyanBright("SQLite"),
+        { name: chalk.blue("PostgreSQL"), value: "PostgreSQL" },
+        { name: chalk.green("MongoDB"), value: "MongoDB" },
+        { name: chalk.cyan("SQLite"), value: "SQLite" },
       ],
     },
     {
       name: "authType",
       type: "select",
-      message: chalk.cyan("Choose a Auth type for your project: "),
-      choices: [chalk.yellow("JWT"), chalk.red("API Key"), chalk.gray("None")],
+      message: "Choose an Auth type for your project:",
+      choices: [
+        { name: chalk.yellow("JWT"), value: "JWT" },
+        { name: chalk.red("API Key"), value: "API KEY" },
+        { name: chalk.gray("None"), value: "None" },
+      ],
     },
   ]);
 
-  await loadingSpinner(answers);
+  // spinner would be added when generating folder / files
+  //   const spinner = ora("Loading initial prompts...").start();
+  await generateProjectFiles(answers);
+  //   setTimeout(() => {
+  //     spinner.color = "yellow";
+  //     spinner.text = chalk.yellow("Loading configuration...");
+  //   }, 1000);
+  //   spinner.succeed(chalk.green("Project created successfully!"));
 }
