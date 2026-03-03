@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { program } from "commander";
 import chalk from "chalk";
+import { createBoilerPlate } from "./setup.js";
 
 program
   .name("api-forge")
@@ -10,8 +11,9 @@ program
   .version(`${chalk.greenBright("1.0.0")}`);
 
 program
-  .command("api-forge")
+  .command("init <description>")
   .description("Command for Basic API boilerplate")
-  .option("init ,init <project>", "Project Name") // flag -> project name
-  .action();
+  .option("-y,--init <project>", "Project Name") // flag -> project name
+  .action(createBoilerPlate);
+
 program.parse();
