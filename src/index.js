@@ -11,7 +11,7 @@ program
   .version(`${chalk.greenBright("1.0.0")}`);
 
 program
-  .command("init <description>")
+  .command("init <projectName>")
   .description("Command for Basic API boilerplate")
   .option("-y,--init <project>", "Project Name") // flag -> project name
   .action(createBoilerPlate);
