@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 const app = new Hono()
 
 app.get('/', (c) => {
-    return c.json({ message: 'Hello from Hono!' })
+    return c.json({ message: 'Hello from {{projectName}}!' })
 })
 
 app.get('/users/:id', (c) => {

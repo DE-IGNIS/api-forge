@@ -1,25 +1,7 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import chalk from "chalk";
-
-async function generateProjectFiles(answers) {
-  console.log(
-    chalk.blueBright("\nProject name confirmation:"),
-    chalk.green(answers.projectConfirm),
-  );
-  console.log(
-    chalk.blueBright("Project framework:"),
-    chalk.cyan(answers.framework),
-  );
-  console.log(
-    chalk.blueBright("Project database:"),
-    chalk.yellow(answers.database),
-  );
-  console.log(
-    chalk.blueBright("Project authType:"),
-    chalk.magenta(answers.authType),
-  );
-}
+import { generateProjectFiles } from "./generator.js";
 
 export async function createBoilerPlate(options) {
   const answers = await inquirer.prompt([

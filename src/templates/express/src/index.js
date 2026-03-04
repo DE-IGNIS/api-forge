@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to DEMO' });
+    res.json({ message: 'Welcome to {{projectName}}' });
 });
 
 app.use((err, req, res, next) => {
