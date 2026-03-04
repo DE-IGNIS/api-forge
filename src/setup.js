@@ -42,12 +42,10 @@ export async function createBoilerPlate(options) {
     },
   ]);
 
-  // spinner would be added when generating folder / files
-  //   const spinner = ora("Loading initial prompts...").start();
-  await generateProjectFiles(answers);
-  //   setTimeout(() => {
-  //     spinner.color = "yellow";
-  //     spinner.text = chalk.yellow("Loading configuration...");
-  //   }, 1000);
-  //   spinner.succeed(chalk.green("Project created successfully!"));
+  const projectName = options;
+  const spinner = ora("Generating boilerplate...").start();
+
+  await generateProjectFiles(answers, projectName);
+
+  spinner.succeed(chalk.green("Project created successfully!"));
 }
