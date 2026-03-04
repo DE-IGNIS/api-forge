@@ -1,5 +1,5 @@
 import path from "path";
-import fse from "fs-extra/esm";
+import fs from "fs-extra";
 import { fileURLToPath } from "url";
 
 const dependencyMap = {
@@ -14,6 +14,10 @@ const dbDependencyMap = {
   SQLite: { "better-sqlite3": "^9.4.3" },
 };
 
+const authDependencyMap = {
+  JWT: { jsonwebtoken: "^9.0.2" },
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -21,16 +25,18 @@ export async function generateProjectFiles(answers, projectName) {
   const dependencies = {
     ...dependencyMap[answers.framework],
     ...dbDependencyMap[answers.database],
+    ...authDependencyMap[answers.authType],
   };
 
   const targetDir = path.join(process.cwd(), projectName);
   const templateDir = path.join(__dirname, "templates");
 
-  await fse.ensureDir(targetDir);
+  await fs.ensureDir(targetDir);
 
-  await fse.copy(path.join(templateDir, "base"), targetDir);
+  // copy base (template)
+  await fs.copy(path.join(templateDir, "base"), targetDir);
 
-  await fse.writeJson(path.join(targetDir, "package.json"), {
+  await fs.writeJson(path.join(targetDir, "package.json"), {
     name: projectName,
     version: "1.0.0",
     description: "",
@@ -44,5 +50,43 @@ export async function generateProjectFiles(answers, projectName) {
 
   const fmw = answers.framework.toLowerCase();
 
-  await fse.copy(path.join(templateDir, fmw), path.join(targetDir, "src"));
+  // copy framework (template)
+  await fs.copy(path.join(templateDir, fmw), path.join(targetDir, ""));
+
+  await modifyTemplate(answers, targetDir, projectName);
+}
+
+export async function modifyTemplate(answers, targetDir, projectName) {
+  const readme_content = `
+# ${projectName} 
+A ${answers.framework} API with ${answers.database} and ${answers.authType} auth.
+    
+## Getting Started
+npm install
+npm run dev
+    
+## Contributing
+Follow the project contribution guidelines when modifying templates.
+`;
+
+  const readme_file = path.join(targetDir, "README.md");
+  await fs.outputFile(readme_file, readme_content);
+
+  const index_file = path.join(targetDir, "src/index.js");
+
+  const data = await fs.readFile(index_file, "utf8");
+  const result = data.replace(/\{\{projectName\}\}/g, `${projectName}`);
+
+  await fs.outputFile(index_file, result);
+
+  if (answers.authType == "JWT") {
+    const env_file = path.join(targetDir, ".env");
+    await fs.outputFile(env_file, "PORT = 8080\nJWT_SECRET = SECRET");
+  } else if (answers.authType == "API KEY") {
+    const env_file = path.join(targetDir, ".env");
+    await fs.outputFile(env_file, "PORT = 8080\nAPI_KEY = KEY");
+  } else {
+    const env_file = path.join(targetDir, ".env");
+    await fs.outputFile(env_file, "PORT = 8080");
+  }
 }
