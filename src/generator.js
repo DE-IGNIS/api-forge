@@ -1,53 +1,48 @@
-import chalk from "chalk";
+import path from "path";
 import fse from "fs-extra/esm";
-// import { readFileSync } from "fs";
-// import { readFile } from "fs-promises";
-// import { outputFile, outputFileSync } from "fs-extra/esm";
+import { fileURLToPath } from "url";
 
-// Pseudocode — your job to implement
-// 1. Take answers object as input
-// 2. Determine which framework template folder to copy
-// 3. Copy base/ templates into project root
-// 4. Copy framework/src/index.js into project src/
-// 5. Replace {{projectName}}, {{framework}}, {{database}} placeholders
-// 6. Write a generated package.json with correct dependencies
-// 7. Wrap steps 2-6 in ora spinner
+const dependencyMap = {
+  Express: { express: "^4.18.2" },
+  Fastify: { fastify: "^4.26.0" },
+  Hono: { hono: "^4.1.0" },
+};
 
-// D:\templates\base
-// D:\[08] SIDE PROJECTS\CLI TOOLS\api-forge\src\templates
-// src\templates
+const dbDependencyMap = {
+  PostgreSQL: { pg: "^8.11.0" },
+  MongoDB: { mongoose: "^8.2.0" },
+  SQLite: { "better-sqlite3": "^9.4.3" },
+};
 
-export function generateProjectFiles(answers) {
-  if (answers.framework == "Express") {
-    fse
-      .copy("src/templates/base", "/api-forge")
-      .then(() => {
-        console.log("Success!");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    console.log("Express");
-  } else if (answers.framework == "Fastify") {
-    console.log("Fastify");
-  } else {
-    console.log("Hono");
-  }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  //   console.log(
-  //     chalk.blueBright("\nProject name confirmation:"),
-  //     chalk.green(answers.projectConfirm),
-  //   );
-  //   console.log(
-  //     chalk.blueBright("Project framework:"),
-  //     chalk.cyan(answers.framework),
-  //   );
-  //   console.log(
-  //     chalk.blueBright("Project database:"),
-  //     chalk.yellow(answers.database),
-  //   );
-  //   console.log(
-  //     chalk.blueBright("Project authType:"),
-  //     chalk.magenta(answers.authType),
-  //   );
+export async function generateProjectFiles(answers, projectName) {
+  const dependencies = {
+    ...dependencyMap[answers.framework],
+    ...dbDependencyMap[answers.database],
+  };
+
+  const targetDir = path.join(process.cwd(), projectName);
+  const templateDir = path.join(__dirname, "templates");
+
+  await fse.ensureDir(targetDir);
+
+  await fse.copy(path.join(templateDir, "base"), targetDir);
+
+  await fse.writeJson(path.join(targetDir, "package.json"), {
+    name: projectName,
+    version: "1.0.0",
+    description: "",
+    type: "module",
+    scripts: {
+      dev: "node src/index.js",
+    },
+    license: "ISC",
+    dependencies,
+  });
+
+  const fmw = answers.framework.toLowerCase();
+
+  await fse.copy(path.join(templateDir, fmw), path.join(targetDir, "src"));
 }
