@@ -19,10 +19,11 @@ api-forge init <project-name>
 
 ## Supported Stacks
 
-Category Options Supported
-Frameworks: Express, Fastify, Hono
-Databases: PostgreSQL, MongoDB, SQLite
-Auth: JWT, API Key, None
+| Category   | Options Supported           |
+| ---------- | --------------------------- |
+| Frameworks | Express , Fastify , Hono    |
+| Databases  | PostgreSQL, MongoDB, SQLite |
+| Auth       | JWT, API Key, None          |
 
 ## Generated Project Structure
 
@@ -31,6 +32,7 @@ projectName/
 ├── src/
 │ └── middleware/
 │ └── auth.js ← only when JWT or API KEY
+├── index.js
 ├── package.json
 ├── README.md
 ├── .env
