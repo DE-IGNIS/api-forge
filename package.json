@@ -4,7 +4,7 @@
   "description": "A CLI tool that instantly scaffolds development-ready API backends",
   "main": "./src/index.js",
   "bin": {
-    "api-forge": "./src/index.js"
+    "api-forge": "src/index.js"
   },
   "type": "module",
   "files": [
