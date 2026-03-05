@@ -31,9 +31,9 @@ api-forge init <project-name>
 projectName/
 │
 ├── src/
-│ └── middleware/
+|    └── index.js
+│   └── middleware/
 │       └── auth.js ← only when JWT or API KEY
-├── index.js
 ├── package.json
 ├── README.md
 ├── .env
