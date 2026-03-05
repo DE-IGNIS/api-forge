@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import { fileURLToPath } from "url";
+import { generateAuthMiddleware } from "./generateAuth.js";
 
 const dependencyMap = {
   Express: { express: "^4.18.2" },
@@ -22,6 +23,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function generateProjectFiles(answers, projectName) {
+  let generateProject = true;
+
+  // console.log(answers.projectConfirm);
+  if (!answers.projectConfirm) {
+    // console.log("Project won't be created");
+    generateProject = false;
+    return generateProject;
+  }
+
+  const specialChars = /[^a-zA-Z0-9-]/;
+
+  if (specialChars.test(projectName)) {
+    console.log("Project name is invalid");
+    generateProject = false;
+    return generateProject;
+  }
+
   const dependencies = {
     ...dependencyMap[answers.framework],
     ...dbDependencyMap[answers.database],
@@ -30,6 +48,14 @@ export async function generateProjectFiles(answers, projectName) {
 
   const targetDir = path.join(process.cwd(), projectName);
   const templateDir = path.join(__dirname, "templates");
+
+  let exist = await fs.pathExists(targetDir);
+
+  if (exist) {
+    console.log("\nDirectoy Already exists");
+    generateProject = false;
+    return generateProject;
+  }
 
   await fs.ensureDir(targetDir);
 
@@ -54,6 +80,9 @@ export async function generateProjectFiles(answers, projectName) {
   await fs.copy(path.join(templateDir, fmw), path.join(targetDir, ""));
 
   await modifyTemplate(answers, targetDir, projectName);
+  await generateAuthMiddleware(answers, targetDir);
+
+  return generateProject;
 }
 
 export async function modifyTemplate(answers, targetDir, projectName) {
