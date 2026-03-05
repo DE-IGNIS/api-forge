@@ -1,3 +1,3 @@
-# publish everything in src/
-!src/templates/base/.env
-!src/templates/base/.gitignore
+node_modules/
+.git/
+.gitignore
