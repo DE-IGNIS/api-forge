@@ -1,7 +1,7 @@
 {
   "name": "@matrixmind/api-forge",
   "version": "1.0.0",
-  "description": "",
+  "description": "A CLI tool that instantly scaffolds development-ready API backends",
   "main": "./src/index.js",
   "bin": {
     "api-forge": "./src/index.js"
