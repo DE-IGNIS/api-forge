@@ -9,6 +9,8 @@
   "type": "module",
   "files": [
     "src/",
+    "src/templates/base/.env",
+    "src/templates/base/.gitignore",
     "README.md",
     "license.txt"
   ],
