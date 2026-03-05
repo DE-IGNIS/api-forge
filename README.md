@@ -27,6 +27,7 @@ api-forge init <project-name>
 
 ## Generated Project Structure
 
+```
 projectName/
 │
 ├── src/
@@ -37,3 +38,4 @@ projectName/
 ├── README.md
 ├── .env
 └── .gitignore
+```
