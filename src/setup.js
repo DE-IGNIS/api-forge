@@ -45,7 +45,16 @@ export async function createBoilerPlate(options) {
   const projectName = options;
   const spinner = ora("Generating boilerplate...").start();
 
-  await generateProjectFiles(answers, projectName);
+  try {
+    const isGenerated = await generateProjectFiles(answers, projectName);
 
-  spinner.succeed(chalk.green("Project created successfully!"));
+    if (!isGenerated) {
+      spinner.fail(chalk.red("Project generation aborted!"));
+      return;
+    }
+
+    spinner.succeed(chalk.green("Project created successfully!"));
+  } catch (error) {
+    spinner.fail(chalk.red("Something went wrong during project generation."));
+  }
 }
