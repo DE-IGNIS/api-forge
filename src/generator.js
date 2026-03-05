@@ -61,6 +61,14 @@ export async function generateProjectFiles(answers, projectName) {
 
   // copy base (template)
   await fs.copy(path.join(templateDir, "base"), targetDir);
+  await fs.move(
+    path.join(targetDir, "env.template"),
+    path.join(targetDir, ".env"),
+  );
+  await fs.move(
+    path.join(targetDir, "gitignore.template"),
+    path.join(targetDir, ".gitignore"),
+  );
 
   await fs.writeJson(path.join(targetDir, "package.json"), {
     name: projectName,
