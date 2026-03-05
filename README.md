@@ -32,7 +32,7 @@ projectName/
 │
 ├── src/
 │ └── middleware/
-│ └── auth.js ← only when JWT or API KEY
+│       └── auth.js ← only when JWT or API KEY
 ├── index.js
 ├── package.json
 ├── README.md
